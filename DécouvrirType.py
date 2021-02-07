@@ -15,6 +15,7 @@ class DécouvrirType:
         listPrémisse=[]  #cette liste a pour but d'insérer les prémisses
         listConclusion=[] #cette liste a pour but d'insérer les conclusions
         listBaseFait=[] #cette liste a pour but d'insérer les fait lus par le fichier 2
+        listRègles=[] #cette liste a pour but d'insérer les règles
         f = open(self.file1, "r")
         stop=False
         for x in f:
@@ -33,23 +34,29 @@ class DécouvrirType:
                for i in quatre:
                   if (i not in listPrémisse):
                     listPrémisse.append(i)
+               R=Regle(listPrémisse,listConclusion)
+               listConclusion.clear()
+               listPrémisse.clear()
+               listRègles.append(R)
             elif (len(cinq)==cOU+1 and cET==0):
                 for i in cinq:
                     if (i not in listPrémisse):
-                       listPrémisse.append(i)
+                         listPrémisse.append(i)
+                R=Regle(listPrémisse,listConclusion)
+                listConclusion.clear()
+                listPrémisse.clear();
+                listRègles.append(R)
             else :
                 stop=True
-        if (len(listPrémisse)!=0 and stop==False):
-              print(listPrémisse)
-              print(listConclusion)
+        if (stop==False):
               f2= open(self.file2, "r")
               for j in f2:
                   n=j.split("\n")[0]
                   for z in n :
                       if z not in listBaseFait :
                        listBaseFait.append(z)
-              R =Regle(listPrémisse,listConclusion)
-              BaseConnaisanceA=BaseConnaisance(R,listBaseFait)
+              BaseConnaisanceA=BaseConnaisance(listRègles,listBaseFait)
+              print(len(BaseConnaisanceA.Règles))
               return("RAHA mliha n9adou nabdou l khadma taana ")
 
         else:
