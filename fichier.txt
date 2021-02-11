@@ -1,5 +1,4 @@
-Regle(0): SI a et b et c et d , ALORS e
-Regle(1): SI e ou d , ALORS f
-Regle(2): SI e ou h ou j ou f, ALORS f
-Regle(3): SI a et b et c et z  , ALORS e
-Regle(4): SI a ou b ou c ou z  , ALORS e
+Regle(0): SI souhila , ALORS badra
+Regle(0): SI wided OU souhila , ALORS groupe1
+Regle(0): SI a ET souhila , ALORS x
+Regle(0): SI  x , ALORS amine
