@@ -191,6 +191,7 @@ class chainage:
              for i in BaseRèglesCopie:
                 compteurGlocale=compteurGlocale+1
                 if (i.Listconslusions.count(input)!=0):
+                   print(i.mode)
                    if (i.mode=="ET"):
                         cpt=0
                         for z in i.Listprémisses:
@@ -215,14 +216,20 @@ class chainage:
                             stop=True
                             return True
                    elif (i.mode=="OU"):
+
+                         cpteur=0
                          for z in i.Listprémisses:
                              z = z.split(" ")
                              z = z[1]
                              if (stop1==False):
+                                 cpteur=cpteur+1
                                  if (z not in self.baseConnaissance.BaseFait):
                                      a=self.chainage_arrière(z)
+                                     print(z,a)
                                      if (a==False):
-                                         return False
+                                         stop = False
+                                         if (cpteur==len(i.Listprémisses)):
+                                              return False
                                  else:
                                      stop1=True
                                      stop=True
@@ -236,12 +243,12 @@ class chainage:
 c = DécouvrirType("fichier.txt", "baseFait.txt")
 BaseConnaisanceB = c.Découvrir()
 if BaseConnaisanceB!=None:
-      #print(BaseConnaisanceB.Règles[0].Listconslusions) #j'étais entrain de faire le test
+      #print(BaseConnaisanceB.Règles[2].Listconslusions) #j'étais entrain de faire le test
       ch=chainage(1,BaseConnaisanceB)
       #ch.chainage_avant("amine")
       #ch.chainage_avant_baseFait()
-     # BaseConnaisanceB.BaseFait.remove('') #j'ai supprimer l'espace
+      #BaseConnaisanceB.BaseFait.remove('') #j'ai supprimer l'espace
       #print(BaseConnaisanceB.BaseFait)
-      print(ch.chainage_arrière("groupe1"))
+      print(ch.chainage_arrière("amine"))
 else :
     print("on a pas traité ce cas")
