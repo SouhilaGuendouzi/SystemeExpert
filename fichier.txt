@@ -1,4 +1,5 @@
-Regle(0): SI souhila , ALORS badra
-Regle(0): SI wided OU souhila , ALORS groupe1
-Regle(0): SI a ET souhila , ALORS x
-Regle(0): SI  x , ALORS amine
+Regle(0): SI a ET b , ALORS c
+Regle(1): SI wided OU souhila , ALORS groupe1 ET i
+Regle(2): SI amine ET souhila , ALORS i
+Regle(3): SI x , ALORS amine
+
