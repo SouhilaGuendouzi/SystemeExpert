@@ -1,6 +1,4 @@
 from typing import Type
-
-
 class Regle:
     Listprémisses: list
     Listconclusions: list
@@ -20,8 +18,8 @@ class BaseConnaisance:
         self.BaseFait = BaseFait
 class DécouvrirType:
     def __init__(self, file1, file2):
-        self.file1 = file1;
-        self.file2 = file2;
+        self.file1 = file1; #HOUWA fichier li fih les regles
+        self.file2 = file2; #fichiers li fih base fait initiale
     def Découvrir(self):
         listPrémisse = []    # cette liste a pour but d'insérer les prémisses
         listConclusion = []  # cette liste a pour but d'insérer les conclusions
@@ -43,7 +41,10 @@ class DécouvrirType:
             sept = six.split("ET")
             for j in sept:
                 if (j not in listConclusion):
-                    listConclusion.append(j)
+                    p=j.split(" ")
+                    p=p[1].split("\n")
+                    p=p[0]
+                    listConclusion.append(p)
             if (len(quatre) == cET + 1 and cOU == 0):
                 for i in quatre:
                     if (i not in listPrémisse):
@@ -94,12 +95,12 @@ class chainage:
             BaseRèglesCopie=self.baseConnaissance.Règles
             if (input in self.baseConnaissance.BaseFait):
                 stop=True
-                print("trouvééé")
+                print("trouvé à partir la base de fait")
             else:
                 while (len(BaseRèglesCopie)!=0 and stop==False):
                     cpt =0
                     for i in BaseRèglesCopie:
-                        cpt=cpt+1
+                        cpt=cpt+1 # il compte le nombre de regles
                     for i in BaseRèglesCopie:
                         stop1 = False
                         if i.mode=="ET":
@@ -112,12 +113,9 @@ class chainage:
                                      print(s,"not in")
                            if (stop1==False) :
                                for j in i.Listconslusions:
-                                   s = j.split(" ")
-                                   s =s[1].split("\n")
-                                   s=s[0]
-                                   if (self.baseConnaissance.BaseFait.count(s)==0):
-                                       self.baseConnaissance.BaseFait.append(s)
-                                       if (s==input):
+                                   if (self.baseConnaissance.BaseFait.count(j)==0):
+                                       self.baseConnaissance.BaseFait.append(j)
+                                       if (j==input):
                                            stop = True
                                            print(input,"est prouvée")
                                            BaseRèglesCopie.remove(i)
@@ -130,14 +128,11 @@ class chainage:
                                         stop1 = True
                                 if (stop1 == True):
                                     for j in i.Listconslusions:
-                                        s = j.split(" ")
-                                        s = s[1].split("\n")
-                                        s = s[0]
-                                        if (self.baseConnaissance.BaseFait.count(s)==0):
-                                            self.baseConnaissance.BaseFait.append(s)
-                                            if (s==input):
+                                        if (self.baseConnaissance.BaseFait.count(j)==0):
+                                            self.baseConnaissance.BaseFait.append(j)
+                                            if (j==input):
                                                 stop = True
-                                                print(input,"est prouvée")
+                                                print(input,"est prouvé")
                                                 BaseRèglesCopie.remove(i)
                         else :print("mode inconnu")
                     if (cpt==len(BaseRèglesCopie)):
@@ -162,11 +157,8 @@ class chainage:
                                     stop1 = True
                         if (stop1 == False):
                             for j in i.Listconslusions:
-                                s = j.split(" ")
-                                s = s[1].split("\n")
-                                s = s[0]
-                                if (self.baseConnaissance.BaseFait.count(s) == 0):
-                                    self.baseConnaissance.BaseFait.append(s)
+                                if (self.baseConnaissance.BaseFait.count(j) == 0):
+                                    self.baseConnaissance.BaseFait.append(j)
                                     BaseRèglesCopie.remove(i)
                     elif i.mode == "OU":
                         for j in i.Listprémisses:
@@ -177,25 +169,79 @@ class chainage:
                                     stop1 = True
                             if (stop1 == True):
                                 for j in i.Listconslusions:
-                                    s = j.split(" ")
-                                    s = s[1].split("\n")
-                                    s = s[0]
-                                    if (self.baseConnaissance.BaseFait.count(s) == 0):
-                                        self.baseConnaissance.BaseFait.append(s)
+                                    if (self.baseConnaissance.BaseFait.count(j) == 0):
+                                        self.baseConnaissance.BaseFait.append(j)
                                         BaseRèglesCopie.remove(i)
                     else:
                         print("mode inconnu")
                 if (cpt == len(BaseRèglesCopie)):
                     stop = True
 
+    def chainage_arrière(self,input):
+        stop1=False
+        stop=False
+        BaseRèglesCopie = self.baseConnaissance.Règles
+        if (input in self.baseConnaissance.BaseFait):
+            print("trouvé à partir la base de fait")
+            stop=True
+            return True
+        else:
+            compteurGlocale=0
+            while(compteurGlocale<=len(self.baseConnaissance.Règles)):
+             for i in BaseRèglesCopie:
+                compteurGlocale=compteurGlocale+1
+                if (i.Listconslusions.count(input)!=0):
+                   if (i.mode=="ET"):
+                        cpt=0
+                        for z in i.Listprémisses:
+                            z=z.split(" ")
+                            z=z[1]
+                            if (stop1==False):
+                               if (z not in self.baseConnaissance.BaseFait):
+                                 a=self.chainage_arrière(z)
+                                 print(a)
+                                 if (a==False) :
+                                    stop1=True
+                                    return False
+                                 else :
+                                     cpt=cpt+1
+                                     print(z, cpt)
+                               else:
+                                   cpt=cpt+1
+                                   print(z, cpt)
+
+                        if (cpt==len(i.Listprémisses)):
+                            self.baseConnaissance.BaseFait.append(input)
+                            stop=True
+                            return True
+                   elif (i.mode=="OU"):
+                         for z in i.Listprémisses:
+                             z = z.split(" ")
+                             z = z[1]
+                             if (stop1==False):
+                                 if (z not in self.baseConnaissance.BaseFait):
+                                     a=self.chainage_arrière(z)
+                                     if (a==False):
+                                         return False
+                                 else:
+                                     stop1=True
+                                     stop=True
+                                     return True
+                   else :
+                        print("3awdi")
+             if (compteurGlocale==len(self.baseConnaissance.Règles) and stop ==False):
+                  return False
+
+
 c = DécouvrirType("fichier.txt", "baseFait.txt")
 BaseConnaisanceB = c.Découvrir()
 if BaseConnaisanceB!=None:
       #print(BaseConnaisanceB.Règles[0].Listconslusions) #j'étais entrain de faire le test
       ch=chainage(1,BaseConnaisanceB)
-      ch.chainage_avant("amine")
-      ch.chainage_avant_baseFait()
-      BaseConnaisanceB.BaseFait.remove('') #j'ai supprimer l'espace
-      print(BaseConnaisanceB.BaseFait)
+      #ch.chainage_avant("amine")
+      #ch.chainage_avant_baseFait()
+     # BaseConnaisanceB.BaseFait.remove('') #j'ai supprimer l'espace
+      #print(BaseConnaisanceB.BaseFait)
+      print(ch.chainage_arrière("groupe1"))
 else :
-    print("on a pas traiter ce cas")
+    print("on a pas traité ce cas")
