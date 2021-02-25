@@ -9,17 +9,30 @@ class Regle:
         self.Listconslusions = Listconslusions
         self.mode=mode
 
-
 class BaseConnaisance:
     Règles: list[Regle]
     BaseFait: Type[list]
     def __init__(self, Règles, BaseFait):
         self.Règles = Règles
         self.BaseFait = BaseFait
-class DécouvrirType:
+class print_contenu:
     def __init__(self, file1, file2):
         self.file1 = file1; #HOUWA fichier li fih les regles
         self.file2 = file2; #fichiers li fih base fait initiale
+    def print_règles(self):
+        f = open(self.file1, "r")
+        for x in f:
+            print(x)
+    def print_baseFait(self):
+        f = open(self.file2, "r")
+        for x in f:
+            print(x)
+
+
+class DécouvrirType:
+    def __init__(self, file1, file2):
+        self.file1 = file1; #HOUWA fichier li fih les regles
+        self.file2 = file2; #fichiers li fih base de fait initiale
     def Découvrir(self):
         listPrémisse = []    # cette liste a pour but d'insérer les prémisses
         listConclusion = []  # cette liste a pour but d'insérer les conclusions
@@ -81,14 +94,11 @@ class DécouvrirType:
             return BaseConnaisanceA
         else:
             return None
+
 class chainage:
-    typeChainage =None
     baseConnaissance:BaseConnaisance
-
-    def __init__(self,typeChainage,baseConnaissance):
-        self.typeChainage=typeChainage
+    def __init__(self,baseConnaissance):
         self.baseConnaissance=baseConnaissance
-
     def chainage_avant(self, input):
             stop =False
             stop1=False
@@ -110,7 +120,6 @@ class chainage:
                                  s=s[1]
                                  if (self.baseConnaissance.BaseFait.count(s)==0):
                                      stop1=True
-                                     print(s,"not in")
                            if (stop1==False) :
                                for j in i.Listconslusions:
                                    if (self.baseConnaissance.BaseFait.count(j)==0):
@@ -178,20 +187,20 @@ class chainage:
                     stop = True
 
     def chainage_arrière(self,input):
-        stop1=False
-        stop=False
-        BaseRèglesCopie = self.baseConnaissance.Règles
-        if (input in self.baseConnaissance.BaseFait):
+       stop1=False
+       stop=False
+       BaseRèglesCopie = self.baseConnaissance.Règles
+       try :
+         if (input in self.baseConnaissance.BaseFait):
             print("trouvé à partir la base de fait")
             stop=True
             return True
-        else:
+         else:
             compteurGlocale=0
             while(compteurGlocale<=len(self.baseConnaissance.Règles)):
              for i in BaseRèglesCopie:
                 compteurGlocale=compteurGlocale+1
                 if (i.Listconslusions.count(input)!=0):
-                   print(i.mode)
                    if (i.mode=="ET"):
                         cpt=0
                         for z in i.Listprémisses:
@@ -200,23 +209,20 @@ class chainage:
                             if (stop1==False):
                                if (z not in self.baseConnaissance.BaseFait):
                                  a=self.chainage_arrière(z)
-                                 print(a)
                                  if (a==False) :
                                     stop1=True
                                     return False
                                  else :
                                      cpt=cpt+1
-                                     print(z, cpt)
                                else:
                                    cpt=cpt+1
-                                   print(z, cpt)
 
                         if (cpt==len(i.Listprémisses)):
                             self.baseConnaissance.BaseFait.append(input)
                             stop=True
+                            print(input,"est prouvé")
                             return True
                    elif (i.mode=="OU"):
-
                          cpteur=0
                          for z in i.Listprémisses:
                              z = z.split(" ")
@@ -225,7 +231,6 @@ class chainage:
                                  cpteur=cpteur+1
                                  if (z not in self.baseConnaissance.BaseFait):
                                      a=self.chainage_arrière(z)
-                                     print(z,a)
                                      if (a==False):
                                          stop = False
                                          if (cpteur==len(i.Listprémisses)):
@@ -233,22 +238,27 @@ class chainage:
                                  else:
                                      stop1=True
                                      stop=True
+                                     print(input, "est prouvé")
                                      return True
                    else :
-                        print("3awdi")
+                        print("répète")
              if (compteurGlocale==len(self.baseConnaissance.Règles) and stop ==False):
-                  return False
+                   return False
+       except:
+           print("il existe une boucle")
+           return False
 
-
+#f =print_contenu("fichier.txt", "baseFait.txt")
+#f.print_règles()
+#f.print_baseFait()
 c = DécouvrirType("fichier.txt", "baseFait.txt")
 BaseConnaisanceB = c.Découvrir()
 if BaseConnaisanceB!=None:
-      #print(BaseConnaisanceB.Règles[2].Listconslusions) #j'étais entrain de faire le test
-      ch=chainage(1,BaseConnaisanceB)
-      #ch.chainage_avant("amine")
+      ch=chainage(BaseConnaisanceB)
+      ch.chainage_avant("e")
       #ch.chainage_avant_baseFait()
-      #BaseConnaisanceB.BaseFait.remove('') #j'ai supprimer l'espace
-      #print(BaseConnaisanceB.BaseFait)
-      print(ch.chainage_arrière("amine"))
+      BaseConnaisanceB.BaseFait.remove('') #j'ai supprimer l'espace
+      print(BaseConnaisanceB.BaseFait)
+      print(ch.chainage_arrière("school"))
 else :
-    print("on a pas traité ce cas")
+    print("le fichier est mal structuré comme c'est déja mentionné ")
