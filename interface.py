@@ -92,7 +92,7 @@ class Toplevel1:
         self.Labelframe_basefait.place(relx=0.335, rely=0.028, relheight=0.944
                 , relwidth=0.336)
         self.Labelframe_basefait.configure(relief='groove')
-        self.Labelframe_basefait.configure(text='''Base Fait''')
+        self.Labelframe_basefait.configure(text='''Base Fait Initial''')
 
         self.Text_basefait = tk.Text(self.Labelframe_basefait)
         self.Text_basefait.place(relx=0.043, rely=0.089, relheight=0.843
