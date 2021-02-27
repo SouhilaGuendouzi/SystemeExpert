@@ -21,8 +21,10 @@ class print_contenu:
         self.file2 = file2; #fichiers li fih base fait initiale
     def print_règles(self):
         f = open(self.file1, "r")
+        str=""
         for x in f:
-            print(x)
+            str= str+x+"\n"
+        return str
     def print_baseFait(self):
         f = open(self.file2, "r")
         for x in f:
@@ -106,6 +108,8 @@ class chainage:
             if (input in self.baseConnaissance.BaseFait):
                 stop=True
                 print("trouvé à partir la base de fait")
+                s = input+ "\t"+"est prouvée a partir de la base de fait"
+                return s
             else:
                 while (len(BaseRèglesCopie)!=0 and stop==False):
                     cpt =0
@@ -128,6 +132,8 @@ class chainage:
                                            stop = True
                                            print(input,"est prouvée")
                                            BaseRèglesCopie.remove(i)
+                                           s = input+"\t"+"est prouvée"
+                                           return s
                         elif i.mode=="OU":
                             for j in i.Listprémisses:
                                 s = j.split(" ")
@@ -143,10 +149,14 @@ class chainage:
                                                 stop = True
                                                 print(input,"est prouvé")
                                                 BaseRèglesCopie.remove(i)
+                                                s = input+ "\t"+"est prouvée"
+                                                return s
                         else :print("mode inconnu")
                     if (cpt==len(BaseRèglesCopie)):
                         stop=True
                         print("on ne peux pas prouvez cette fait")
+                        s = input+ "\t"+"on ne peux pas prouvez cette fait"
+                        return s
     def chainage_avant_baseFait(self):
         stop = False
         stop1 = False
@@ -168,7 +178,7 @@ class chainage:
                             for j in i.Listconslusions:
                                 if (self.baseConnaissance.BaseFait.count(j) == 0):
                                     self.baseConnaissance.BaseFait.append(j)
-                                    BaseRèglesCopie.remove(i)
+                            BaseRèglesCopie.remove(i)
                     elif i.mode == "OU":
                         for j in i.Listprémisses:
                             s = j.split(" ")
@@ -180,7 +190,7 @@ class chainage:
                                 for j in i.Listconslusions:
                                     if (self.baseConnaissance.BaseFait.count(j) == 0):
                                         self.baseConnaissance.BaseFait.append(j)
-                                        BaseRèglesCopie.remove(i)
+                                BaseRèglesCopie.remove(i)
                     else:
                         print("mode inconnu")
                 if (cpt == len(BaseRèglesCopie)):
@@ -251,14 +261,14 @@ class chainage:
 #f =print_contenu("fichier.txt", "baseFait.txt")
 #f.print_règles()
 #f.print_baseFait()
-c = DécouvrirType("fichier.txt", "baseFait.txt")
-BaseConnaisanceB = c.Découvrir()
-if BaseConnaisanceB!=None:
-      ch=chainage(BaseConnaisanceB)
-      ch.chainage_avant("e")
+#c = DécouvrirType("fichier.txt", "baseFait.txt")
+#BaseConnaisanceB = c.Découvrir()
+#if BaseConnaisanceB!=None:
+ #     ch=chainage(BaseConnaisanceB)
+  #    ch.chainage_avant("e")
       #ch.chainage_avant_baseFait()
-      BaseConnaisanceB.BaseFait.remove('') #j'ai supprimer l'espace
-      print(BaseConnaisanceB.BaseFait)
-      print(ch.chainage_arrière("school"))
-else :
-    print("le fichier est mal structuré comme c'est déja mentionné ")
+      #BaseConnaisanceB.BaseFait.remove('') #j'ai supprimer l'espace
+   #   print(BaseConnaisanceB.BaseFait)
+    #  print(ch.chainage_arrière("school"))
+#else :
+ #   print("le fichier est mal structuré comme c'est déja mentionné ")

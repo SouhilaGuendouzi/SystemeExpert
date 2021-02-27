@@ -6,7 +6,6 @@
 #    Feb 27, 2021 01:13:56 AM CET  platform: Linux
 
 import sys
-from tkinter import tix
 from DécouvrirType import *
 import Pmw
 
@@ -22,12 +21,15 @@ except ImportError:
     import tkinter.ttk as ttk
     py3 = True
 
+import interface_support
 
 def vp_start_gui():
     '''Starting point when module is the main routine.'''
     global val, w, root
     root = tk.Tk()
+    interface_support.set_Tk_var()
     top = Toplevel1 (root)
+    interface_support.init(root, top)
     root.mainloop()
 
 w = None
@@ -38,9 +40,10 @@ def create_Toplevel1(rt, *args, **kwargs):
     #rt = root
     root = rt
     w = tk.Toplevel (root)
+    interface_support.set_Tk_var()
     top = Toplevel1 (w)
+    interface_support.init(w, top, *args, **kwargs)
     return (w, top)
-
 
 def destroy_Toplevel1():
     global w
@@ -69,16 +72,16 @@ class Toplevel1:
         top.minsize(1, 1)
         top.maxsize(1351, 738)
         top.resizable(1,  1)
-        top.title("Syteme Expert")
+        top.title("Systeme Expert")
         self.possibilite_chainage = [
             "chainage avant",
             "chainage arrière",
-            "chainage avant, base fait"  
+            "chainage avant, base fait"
         ]
-        self.chainage = DécouvrirType("fichier.txt", "baseFait.txt")
-        self.BaseConnaisanceB = chainage.Découvrir()
+        self.c = DécouvrirType("fichier.txt", "baseFait.txt")
+        self.BaseConnaisanceB = self.c.Découvrir()
+        self.ch=chainage(self.BaseConnaisanceB)
 
-        self.faits_list = [" "] + list(map(lambda f : str(f) , self.liste_but))
         self.Frame1 = tk.Frame(top)
         self.Frame1.place(relx=0.0, rely=-0.01, relheight=0.504, relwidth=1.005)
         self.Frame1.configure(relief='groove')
@@ -147,6 +150,7 @@ class Toplevel1:
         self.Button_charger.configure(text='''Charger fichiers''')
         self.Button_charger.configure(command=self.bouton_chargement_txt)
 
+        
 
         self.Label_regles = tk.Label(self.Labelframe_fichiers)
         self.Label_regles.place(relx=0.116, rely=0.119, height=21, width=49
@@ -157,6 +161,39 @@ class Toplevel1:
         self.Label_basefait.place(relx=0.116, rely=0.356, height=21, width=69
                 , bordermode='ignore')
         self.Label_basefait.configure(text='''Base Fait''')
+
+
+        self.Labelframe_chainage = tk.LabelFrame(top)
+        self.Labelframe_chainage.place(relx=0.681, rely=0.494, relheight=0.42
+                , relwidth=0.316)
+        self.Labelframe_chainage.configure(relief='groove')
+        self.Labelframe_chainage.configure(text='''Chainage''')
+
+        self.Button_lancer = tk.Button(self.Labelframe_chainage)
+        self.Button_lancer.place(relx=0.417, rely=0.772, height=31, width=71
+                , bordermode='ignore')
+        self.Button_lancer.configure(text='''Lancer''')
+        self.Button_lancer.configure(command=self.bouton_lancement_chainage)
+
+
+        self.Entry_but = tk.Entry(self.Labelframe_chainage)
+        self.Entry_but.place(relx=0.116, rely=0.57, height=33, relwidth=0.384
+                , bordermode='ignore')
+        self.Entry_but.configure(background="white")
+        self.Entry_but.configure(font="TkFixedFont")
+
+        self.Label_but = tk.Label(self.Labelframe_chainage)
+        self.Label_but.place(relx=0.116, rely=0.503, height=21, width=29
+                , bordermode='ignore')
+        self.Label_but.configure(text='''But''')
+
+        self.combo_chaine = Pmw.ComboBox(self.Labelframe_chainage, scrolledlist_items = self.possibilite_chainage)
+        self.combo_chaine.place(relx=0.116, rely=0.364, relwidth=0.433, bordermode='ignore')
+
+        self.Label_typechainage = tk.Label(self.Labelframe_chainage)
+        self.Label_typechainage.place(relx=0.116, rely=0.201, height=21, width=99
+                , bordermode='ignore')
+        self.Label_typechainage.configure(text='''Type chainage''')
 
         self.Labelframe_resultat = tk.LabelFrame(top)
         self.Labelframe_resultat.place(relx=0.007, rely=0.494, relheight=0.489
@@ -186,55 +223,89 @@ class Toplevel1:
         self.Text_resultfait.configure(state="disabled")
 
 
-        self.Labelframe_chainage = tk.LabelFrame(top)
-        self.Labelframe_chainage.place(relx=0.681, rely=0.494, relheight=0.42
-                , relwidth=0.316)
-        self.Labelframe_chainage.configure(relief='groove')
-        self.Labelframe_chainage.configure(text='''Chainage''')
-
-        self.Button_lancer = tk.Button(self.Labelframe_chainage)
-        self.Button_lancer.place(relx=0.417, rely=0.772, height=31, width=71
-                , bordermode='ignore')
-        self.Button_lancer.configure(text='''Lancer''')
-
-        self.Entry_but = tk.Entry(self.Labelframe_chainage)
-        self.Entry_but.place(relx=0.116, rely=0.57, height=33, relwidth=0.384
-                , bordermode='ignore')
-        self.Entry_but.configure(background="white")
-        self.Entry_but.configure(font="TkFixedFont")
-
-        self.Label_but = tk.Label(self.Labelframe_chainage)
-        self.Label_but.place(relx=0.116, rely=0.503, height=21, width=29
-                , bordermode='ignore')
-        self.Label_but.configure(text='''But''')
-
-        self.combo_chaine = Pmw.ComboBox(self.Labelframe_chainage, scrolledlist_items = self.possibilite_chainage)
-        self.combo_chaine.place(relx=0.01, rely=0.364, relwidth=0.33, bordermode='ignore')
-
-
-        self.Label_typechainage = tk.Label(self.Labelframe_chainage)
-        self.Label_typechainage.place(relx=0.116, rely=0.201, height=21, width=99
-                , bordermode='ignore')
-        self.Label_typechainage.configure(text='''Type chainage''')
-
         self.Button_quitter = tk.Button(top)
         self.Button_quitter.place(relx=0.937, rely=0.931, height=31, width=71)
         self.Button_quitter.configure(text='''Quitter''')
         self.Button_quitter.configure(command=root.quit)
 
-        def bouton_chargement_txt(self):
-      #  self.Text_basefait.configure(state="normal")
-       # self.Text_basefait.delete(1.0, tk.END)
-       # self.Text_regles.configure(state="normal")
-# self.Text_regles.delete(1.0, tk.END)
-  #      self.chainage = DécouvrirType(self.Entry_file1.get(), self.Entry_file2.get())
+    def bouton_lancement_chainage(self):
+            self.del_text(self.Text_result)
+            self.del_text(self.Text_resultfait)
+            but = str(self.Entry_but.get())
 
-   #     self.Text_basefait.configure(state="normal")
-    #    self.Text_basefait.insert(tk.INSERT, string)
-     #   self.Text_basefait.configure(state="disabled")
-      #  self.Text_regles.configure(state="normal")
-       # self.Text_regles.insert(tk.INSERT, str(self.chainage))
-       # self.Text_regles.configure(state="disabled")
+            if self.combo_chaine.get() == self.possibilite_chainage[0]:
+                    self.c = DécouvrirType("fichier.txt", "baseFait.txt")
+                    self.BaseConnaisanceB = self.c.Découvrir()
+                    self.ch=chainage(self.BaseConnaisanceB)
+                    string = self.ch.chainage_avant(but)
+                    self.set_text(self.Text_result, str(string))
+                    string = ""
+                    for i, f in enumerate(self.BaseConnaisanceB.BaseFait):
+                            string += "Fait " + str(i) + "\t" + str(f) + "\n\n"
+                    self.set_text(self.Text_resultfait, str(string))
+                    self.BaseConnaisanceB.BaseFait = self.Entry_file2.get()
+
+            elif self.combo_chaine.get() == self.possibilite_chainage[1]:
+                    self.c = DécouvrirType("fichier.txt", "baseFait.txt")
+                    self.BaseConnaisanceB = self.c.Découvrir()
+                    self.ch=chainage(self.BaseConnaisanceB)
+                    string = self.ch.chainage_arrière(but)
+                    self.set_text(self.Text_result, str(string))
+                    string = ""
+                    for i, f in enumerate(self.BaseConnaisanceB.BaseFait):
+                            string += "Fait " + str(i) + "\t" + str(f) + "\n\n"
+                    self.set_text(self.Text_resultfait, str(string))
+                    self.BaseConnaisanceB.BaseFait = self.Entry_file2.get()
+
+            elif self.combo_chaine.get() == self.possibilite_chainage[2]:
+                    self.c = DécouvrirType("fichier.txt", "baseFait.txt")
+                    self.BaseConnaisanceB = self.c.Découvrir()
+                    self.ch=chainage(self.BaseConnaisanceB)
+                    string = self.ch.chainage_avant_baseFait()
+                    self.set_text(self.Text_result, str(string))
+                    string = ""
+                    for i, f in enumerate(self.BaseConnaisanceB.BaseFait):
+                            string += "Fait " + str(i) + "\t" + str(f) + "\n\n"
+                    self.set_text(self.Text_resultfait, str(string))
+                    self.BaseConnaisanceB.BaseFait = self.Entry_file2.get()
+            else:
+                    self.set_text(self.Text_result,str("Veuillez choisir un type de chainage"))
+                    self.set_text(self.Text_resultfait,str("Veuillez choisir un type de chainage"))
+                    self.BaseConnaisanceB.BaseFait = self.Entry_file2.get()
+
+    def set_text(self, zdt, text):
+        zdt.configure(state="normal")
+        zdt.insert(1.0, text)
+        zdt.configure(state="normal")
+
+    def del_text(self,zdt):
+        zdt.configure(state="normal")
+        zdt.delete(1.0, tk.END)
+        zdt.configure(state="normal")
+
+    def bouton_chargement_txt(self):
+        self.Text_basefait.configure(state="normal")
+        self.Text_basefait.delete(1.0, tk.END)
+        self.Text_regles.configure(state="normal")
+        self.Text_regles.delete(1.0, tk.END)
+        self.c = DécouvrirType(self.Entry_file1.get(), self.Entry_file2.get())
+        self.BaseConnaisanceB = self.c.Découvrir()
+
+        string = ""
+        for i, f in enumerate(self.BaseConnaisanceB.BaseFait):
+            string += "Fait " + str(i) + "\t" + str(f) + "\n\n"
+        self.Text_basefait.configure(state="normal")
+        self.Text_basefait.insert(tk.INSERT, string)
+        self.Text_basefait.configure(state="disabled")
+        self.Text_regles.configure(state="normal")
+        self.contenu = print_contenu(self.Entry_file1.get(), self.Entry_file2.get())
+        self.Text_regles.insert(tk.INSERT, str(self.contenu.print_règles()))
+        self.Text_regles.configure(state="disabled")
+
+      
+
+
+       
 
 if __name__ == '__main__':
     vp_start_gui()

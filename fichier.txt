@@ -3,5 +3,3 @@ Regle(1): SI wided OU souhila , ALORS groupe1 ET esi
 Regle(2): SI school ET souhila , ALORS x ET y
 Regle(3): SI esi , ALORS school
 Regle(4): SI a ET c , ALORS d ET e
-
-
